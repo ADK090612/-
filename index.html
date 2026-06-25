@@ -80,7 +80,7 @@
             left: 50%;
             transform: translateX(-50%);
             width: 90%;
-            max-width: 900px; /* 항목 추가로 너비 약간 증가 */
+            max-width: 900px;
             padding: 15px 30px;
             border-radius: 50px;
             display: flex;
@@ -110,23 +110,23 @@
             text-decoration: none;
             display: flex;
             align-items: baseline;
+            z-index: 1002; /* 햄버거 메뉴 열릴 때 로고 클릭 가능하도록 */
         }
 
-        /* 학년 반 번호 크기 및 스타일 조정 */
         nav .logo span {
             color: var(--text-muted);
-            font-size: 0.75rem; /* 글자 크기 축소 */
+            font-size: 0.75rem;
             font-weight: 400;
             margin-left: 10px;
         }
 
-        nav ul {
+        .desktop-menu {
             list-style: none;
             display: flex;
             gap: 20px;
         }
 
-        nav ul li a {
+        .desktop-menu li a {
             color: var(--text-muted);
             text-decoration: none;
             font-weight: 500;
@@ -134,11 +134,89 @@
             transition: color 0.3s;
         }
 
-        nav ul li a:hover {
+        .desktop-menu li a:hover {
             color: var(--highlight);
         }
 
-        /* 공통 섹션 (한 챕터씩) */
+        /* === 추가된 모바일 햄버거 메뉴 및 사이드바 스타일 === */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            z-index: 1002; /* 사이드바 위로 오도록 설정 */
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background-color: var(--text-main);
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+
+        /* 모바일 사이드바 */
+        .mobile-sidebar {
+            position: fixed;
+            top: 0;
+            right: -280px; /* 기본적으로 화면 밖에 숨김 */
+            width: 280px;
+            height: 100vh;
+            background: rgba(15, 15, 20, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-left: 1px solid var(--glass-border);
+            z-index: 1001;
+            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
+            padding-top: 100px;
+            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mobile-sidebar.open {
+            right: 0; /* 부드럽게 등장 */
+        }
+
+        .mobile-menu {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            padding: 0 40px;
+        }
+
+        .mobile-menu li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 500;
+            transition: color 0.3s;
+            display: block;
+        }
+
+        .mobile-menu li a:hover,
+        .mobile-menu li a:active {
+            color: var(--highlight);
+        }
+
+        /* 배경 어둡게 처리하는 오버레이 */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.4s ease;
+        }
+
+        .sidebar-overlay.open {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* 공통 섹션 */
         section {
             min-height: 100vh;
             display: flex;
@@ -259,32 +337,68 @@
             color: #fff;
         }
 
-        /* 반응형 */
+        /* 반응형 (모바일 뷰) */
         @media (max-width: 768px) {
             h1 { font-size: 3rem; }
             h2 { font-size: 2.2rem; }
             .grid-2 { grid-template-columns: 1fr; }
             .glass-card { padding: 40px 20px; }
-            nav ul { display: none; } 
+            
+            /* 모바일에서 데스크탑 메뉴 숨기고 햄버거 아이콘 표시 */
+            .desktop-menu { display: none; } 
+            .hamburger { display: flex; }
+
+            /* 햄버거 버튼 클릭 시 X 모양으로 변환하는 애니메이션 */
+            .hamburger.open span:nth-child(1) {
+                transform: translateY(7px) rotate(45deg);
+            }
+            .hamburger.open span:nth-child(2) {
+                opacity: 0;
+            }
+            .hamburger.open span:nth-child(3) {
+                transform: translateY(-7px) rotate(-45deg);
+            }
         }
     </style>
 </head>
 <body>
 
     <div class="bg-layer"></div>
-    <div class="blue-aura"></div> <div class="glow-orb orb-1"></div>
+    <div class="blue-aura"></div> 
+    <div class="glow-orb orb-1"></div>
     <div class="glow-orb orb-2"></div>
 
     <nav id="navbar">
-        <a href="#" class="logo">ADK <span>대륜고등학교</span></a>
-        <ul>
+        <a href="https://adk090612.github.io/-/" class="logo">ADK <span>대륜고등학교</span></a>
+        
+        <ul class="desktop-menu">
             <li><a href="#intro">소개</a></li>
             <li><a href="#vs-brain">NPU vs 뇌</a></li>
             <li><a href="#cooling">발열 제어</a></li>
             <li><a href="#edge">엣지 컴퓨팅</a></li>
             <li><a href="#future">미래 산업</a></li>
-            <li><a href="#contact">연락처</a></li> </ul>
+            <li><a href="#contact">연락처</a></li> 
+        </ul>
+
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
     </nav>
+
+    <div class="mobile-sidebar" id="mobile-sidebar">
+        <ul class="mobile-menu">
+            <li><a href="#intro">소개</a></li>
+            <li><a href="#vs-brain">NPU vs 뇌</a></li>
+            <li><a href="#cooling">발열 제어</a></li>
+            <li><a href="#edge">엣지 컴퓨팅</a></li>
+            <li><a href="#future">미래 산업</a></li>
+            <li><a href="#contact">연락처</a></li>
+        </ul>
+    </div>
+    
+    <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
     <section id="intro" class="hero-section">
         <div class="container">
@@ -412,6 +526,31 @@
             } else {
                 navbar.classList.remove('scrolled');
             }
+        });
+
+        // 모바일 사이드바 햄버거 메뉴 토글 스크립트
+        const hamburger = document.getElementById('hamburger');
+        const sidebar = document.getElementById('mobile-sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const mobileLinks = document.querySelectorAll('.mobile-menu li a');
+
+        function toggleMobileMenu() {
+            hamburger.classList.toggle('open');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        // 햄버거 버튼과 오버레이 클릭 시 메뉴 여닫기
+        hamburger.addEventListener('click', toggleMobileMenu);
+        overlay.addEventListener('click', toggleMobileMenu);
+
+        // 모바일 메뉴 항목 클릭 시 메뉴 닫으면서 이동
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                if (sidebar.classList.contains('open')) {
+                    toggleMobileMenu();
+                }
+            });
         });
 
         // 스크롤 시 섹션 등장 효과 (한 챕터씩 올라오는 애니메이션)
