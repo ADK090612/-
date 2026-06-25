@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>NPU : The Future of Intelligence</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <style>
+        :root {
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.15);
+            --text-main: #ffffff;
+            --text-muted: #b0b0b0;
+            --highlight: #00e5ff; /* 하늘색 포인트 컬러 */
+            --bg-color: #050505;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+            letter-spacing: -0.02em;
+        }
+
+        html, body {
+            overflow-x: hidden;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            scroll-behavior: smooth;
+        }
+
+        /* 배경 그라데이션 및 애니메이션 효과 */
+        .bg-layer {
+            position: fixed;
+            top: 0; left: 0; width: 100vw; height: 100vh;
+            z-index: -2;
+            background: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #050505 80%);
+        }
+        
+        /* 새로 추가된 하늘색 은은한 그라데이션 애니메이션 */
+        .blue-aura {
+            position: fixed;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%);
+            width: 120vw; height: 120vh;
+            background: radial-gradient(circle, rgba(0, 229, 255, 0.07) 0%, transparent 60%);
+            z-index: -1;
+            pointer-events: none;
+            animation: pulseAura 8s infinite alternate ease-in-out;
+        }
+
+        @keyframes pulseAura {
+            0% { opacity: 0.2; transform: translate(-50%, -50%) scale(0.8); }
+            50% { opacity: 0.7; transform: translate(-50%, -50%) scale(1.1); }
+            100% { opacity: 0.2; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        .glow-orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(120px);
+            opacity: 0.4;
+            z-index: -1;
+            animation: float 10s infinite alternate ease-in-out;
+        }
+        
+        .orb-1 { top: 10%; left: 20%; width: 40vw; height: 40vw; background: #00d2ff; }
+        .orb-2 { bottom: 10%; right: 10%; width: 50vw; height: 50vw; background: #3a7bd5; animation-delay: -5s; }
+
+        @keyframes float {
+            0% { transform: translate(0, 0) scale(1); }
+            100% { transform: translate(30px, -50px) scale(1.1); }
+        }
+
+        /* 내비게이션 바 (필 & 글래스 모피즘) */
+        nav {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 90%;
+            max-width: 900px; /* 항목 추가로 너비 약간 증가 */
+            padding: 15px 30px;
+            border-radius: 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: all 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+            background: rgba(20, 20, 30, 0.9);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        nav.scrolled {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            top: 15px;
+            width: 85%;
+        }
+
+        nav .logo {
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--text-main);
+            text-decoration: none;
+            display: flex;
+            align-items: baseline;
+        }
+
+        /* 학년 반 번호 크기 및 스타일 조정 */
+        nav .logo span {
+            color: var(--text-muted);
+            font-size: 0.75rem; /* 글자 크기 축소 */
+            font-weight: 400;
+            margin-left: 10px;
+        }
+
+        nav ul {
+            list-style: none;
+            display: flex;
+            gap: 20px;
+        }
+
+        nav ul li a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: color 0.3s;
+        }
+
+        nav ul li a:hover {
+            color: var(--highlight);
+        }
+
+        /* 공통 섹션 (한 챕터씩) */
+        section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 100px 20px;
+            position: relative;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 1100px;
+            opacity: 0;
+            transform: translateY(80px);
+            transition: all 1.2s cubic-bezier(0.25, 1, 0.5, 1);
+        }
+
+        section.active .container {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* 글래스 모피즘 카드 래퍼 */
+        .glass-card {
+            background: var(--glass-bg);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            padding: 60px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* 텍스트 스타일 */
+        .label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--highlight);
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        h1 {
+            font-size: 4.5rem;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 30px;
+            background: linear-gradient(to right, #ffffff, #888888);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        h2 {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+        }
+
+        p {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .pill-tag {
+            display: inline-block;
+            padding: 8px 20px;
+            border-radius: 50px;
+            background: rgba(0, 229, 255, 0.1);
+            border: 1px solid rgba(0, 229, 255, 0.3);
+            color: var(--highlight);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-right: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* 챕터별 특별 스타일 */
+        .hero-section {
+            text-align: center;
+        }
+        
+        .hero-section p {
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.3rem;
+        }
+
+        .feature-box {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.08);
+            padding: 30px;
+            border-radius: 20px;
+            transition: transform 0.3s;
+        }
+        
+        .feature-box:hover {
+            transform: translateY(-10px);
+            background: rgba(255,255,255,0.05);
+        }
+
+        .feature-box h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: #fff;
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            h2 { font-size: 2.2rem; }
+            .grid-2 { grid-template-columns: 1fr; }
+            .glass-card { padding: 40px 20px; }
+            nav ul { display: none; } 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-layer"></div>
+    <div class="blue-aura"></div> <div class="glow-orb orb-1"></div>
+    <div class="glow-orb orb-2"></div>
+
+    <nav id="navbar">
+        <a href="#" class="logo">ADK <span>대륜고등학교 2학년 1반 15번 안도경</span></a>
+        <ul>
+            <li><a href="#intro">소개</a></li>
+            <li><a href="#vs-brain">NPU vs 뇌</a></li>
+            <li><a href="#cooling">발열 제어</a></li>
+            <li><a href="#edge">엣지 컴퓨팅</a></li>
+            <li><a href="#future">미래 산업</a></li>
+            <li><a href="#contact">연락처</a></li> </ul>
+    </nav>
+
+    <section id="intro" class="hero-section">
+        <div class="container">
+            <span class="label">차세대 프로세서</span>
+            <h1>지능의 새로운 기준,<br>NPU</h1>
+            <p>신경 처리 장치(NPU)는 인간 뇌의 처리 기능을 모방하도록 설계된 특수한 컴퓨터 마이크로프로세서입니다. 기존의 한계를 넘어, 인공지능과 머신러닝의 혁신을 이끕니다.</p>
+        </div>
+    </section>
+
+    <section id="vs-brain">
+        <div class="container">
+            <div class="glass-card">
+                <span class="label">Architecture</span>
+                <h2>NPU와 인간의 뇌 신경망</h2>
+                <p>NPU는 뇌의 신경망(Neural Network)을 기반으로 회로 계층에서 인간 뉴런과 시냅스의 동작을 시뮬레이션합니다. 인간의 뇌가 시냅스 가중치를 통해 기억과 판단을 통합하듯, NPU 역시 네트워크 노드에 할당된 유동적인 계산 변수인 시냅스 가중치를 통해 '학습'합니다.</p>
+                
+                <div class="grid-2">
+                    <div class="feature-box">
+                        <h3>인간의 뉴런 (Biological)</h3>
+                        <p>화학적 신호와 전기적 신호를 복합적으로 사용하여 정보를 전달하며, 극도로 낮은 전력(약 20W)으로 고도의 병렬 처리와 추론, 창의적 사고를 수행합니다.</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3>NPU (Artificial)</h3>
+                        <p>단일 명령어로 가상 뉴런 세트의 처리를 완료합니다. 정밀한 연산보다는 문제 해결 기능에 최적화되어 있으며, 딥러닝 알고리즘을 통해 수천 개의 코어로 압도적인 병렬 연산을 수행합니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="cooling">
+        <div class="container">
+            <div class="glass-card">
+                <span class="label">Thermal Management</span>
+                <h2>극한의 연산, 그리고 발열 제어</h2>
+                
+                <div class="grid-2">
+                    <div class="feature-box">
+                        <h3 style="color: var(--highlight);">왜 뇌보다 발열이 심할까?</h3>
+                        <p>인간의 뇌는 수백억 개의 뉴런 중 <strong>필요한 부분만 활성화</strong>되는 '스파이킹(Spiking)' 방식을 사용하여 약 20W라는 전구 하나 수준의 적은 에너지를 소모합니다.<br><br>반면, 실리콘 기반의 NPU나 컴퓨팅 장치는 클럭 주기에 맞춰 끊임없이 전자를 이동시키며 수많은 트랜지스터를 켜고 끄게 됩니다. 이 과정에서 발생하는 물리적인 <strong>배선 저항과 누설 전류</strong>가 고스란히 막대한 열 에너지로 변환되어 심한 발열을 일으킵니다.</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3 style="color: var(--highlight);">효과적인 발열 해결책</h3>
+                        <p>강력한 연산 성능을 유지하면서 발열을 최소화하기 위해 현대 하드웨어 공학은 다음과 같은 솔루션을 도입하고 있습니다.<br><br>에너지 효율을 극대화하기 위해 계산 복잡성을 줄인 <strong>저정밀 연산(8-bit 등)</strong>을 지원하며, 열을 넓게 퍼뜨려 식히는 <strong>물리적 베이퍼 챔버(Vapor Chamber)</strong> 구조를 적용합니다. 또한, AI 기반 실시간 온도 예측을 통해 성능을 유동적으로 조절하는 <strong>스마트 스로틀링(Throttling)</strong>을 결합해 시스템의 안정성을 유지합니다.</p>
+                    </div>
+                </div>
+
+                <div style="margin-top: 40px; text-align: center;">
+                    <span class="pill-tag">저정밀 연산(8-bit/4-bit)</span>
+                    <span class="pill-tag">효율적인 전력 아키텍처</span>
+                    <span class="pill-tag">베이퍼 챔버 (방열 설계)</span>
+                    <span class="pill-tag">스마트 스로틀링(Throttling)</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="edge">
+        <div class="container">
+            <div class="glass-card">
+                <span class="label">Next-Gen Computing</span>
+                <h2>엣지 컴퓨팅의 심장</h2>
+                <div class="grid-2">
+                    <div>
+                        <p><strong>클라우드에서 벗어나 디바이스로.</strong><br><br>엣지 컴퓨팅은 중요한 데이터와 컴퓨팅 리소스를 사용자에게 물리적으로 더 가깝게 가져옵니다. 지연 시간을 줄이고, 에너지 소비를 완화하며, 오프라인 상태에서도 강력한 개인 정보 보호를 제공합니다.</p>
+                        <p>적은 에너지를 소모하며 딥러닝을 로컬에서 실시간으로 처리할 수 있는 NPU는 온디바이스(On-Device) AI 생태계를 완성하는 핵심 동력입니다. 자율주행, 로봇, IoT 기기들은 이제 서버의 지시를 기다리지 않고 스스로 판단합니다.</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3>Edge AI Benefits</h3>
+                        <ul style="list-style:none; line-height: 2;">
+                            <li>⚡ 초저지연 (Zero-Latency) 응답</li>
+                            <li>🔒 개인 데이터의 로컬 보호</li>
+                            <li>🔋 네트워크 전력 소비 절감</li>
+                            <li>🌐 오프라인 환경에서도 AI 구동</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="future">
+        <div class="container">
+            <div class="glass-card">
+                <span class="label">Vision</span>
+                <h2>미래 모바일 및 공학 산업에서의 중요성</h2>
+                <p>NPU의 존재는 스마트폰 카메라의 배경 흐림부터 대규모 언어 모델(LLM) 실행까지 산업 전반을 재편하고 있습니다.</p>
+                <div class="grid-2">
+                    <div class="feature-box">
+                        <h3>모바일 산업</h3>
+                        <p>이제 스마트폰은 단순한 통신기기가 아닌 개인형 AI 비서로 진화했습니다. 실시간 언어 번역, 생성형 AI 이미지 편집, 사용자의 패턴을 분석하는 초개인화 서비스 모두 NPU의 온디바이스 처리 덕분입니다.</p>
+                    </div>
+                    <div class="feature-box">
+                        <h3>로보틱스 및 자율주행</h3>
+                        <p>수많은 센서가 쏟아내는 멀티미디어 신호를 지연 없이 해석해야 합니다. 예상치 못한 장애물과 변화하는 교통 패턴을 실시간으로 분석해 생명을 지키는 자율주행의 두뇌 역할은 NPU만이 수행할 수 있습니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact">
+        <div class="container">
+            <div class="glass-card" style="text-align: center;">
+                <span class="label">Contact</span>
+                <h2>문의 및 연락처</h2>
+                <p style="margin-bottom: 40px;">프로젝트나 기술 문의에 대한 사항이 있으시면 아래 연락처로 확인해 주세요.</p>
+                
+                <div style="display: inline-block; text-align: left; background: rgba(255,255,255,0.03); padding: 40px; border-radius: 20px; border: 1px solid var(--glass-border);">
+                    <p style="margin-bottom: 15px; color: #fff;"><strong> 대륜고등학교 2학년 1반 15번 안도경</p>
+                    <p style="margin-bottom: 15px; color: #fff;"><strong> 이메일 :</strong> andogyeong090612@gmail.com</p>
+                    <p style="margin-bottom: 0; color: #fff;"><strong> 연락처 :</strong> 010-7613-7992</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 네비게이션 바 스크롤 효과 (Pill & Glassmorphism)
+        const navbar = document.getElementById('navbar');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+
+        // 스크롤 시 섹션 등장 효과 (한 챕터씩 올라오는 애니메이션)
+        const sections = document.querySelectorAll('section');
+        
+        const observerOptions = {
+            root: null,
+            rootMargin: '0px',
+            threshold: 0.25 // 화면에 25% 보일 때 작동
+        };
+
+        const observer = new IntersectionObserver((entries, observer) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                }
+            });
+        }, observerOptions);
+
+        sections.forEach(section => {
+            observer.observe(section);
+        });
+
+        // 페이지 로드 시 첫 번째 섹션 즉시 활성화
+        window.onload = () => {
+            if(sections.length > 0) {
+                sections[0].classList.add('active');
+            }
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            }
+        };
+    </script>
+</body>
+</html>
