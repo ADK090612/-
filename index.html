@@ -120,27 +120,14 @@
             margin-left: 10px;
         }
 
+        /* PC 화면에서도 햄버거 메뉴를 사용하기 위해 기존 데스크탑 메뉴를 전역적으로 숨김 처리 */
         .desktop-menu {
-            list-style: none;
-            display: flex;
-            gap: 20px;
-        }
-
-        .desktop-menu li a {
-            color: var(--text-muted);
-            text-decoration: none;
-            font-weight: 500;
-            font-size: 0.95rem;
-            transition: color 0.3s;
-        }
-
-        .desktop-menu li a:hover {
-            color: var(--highlight);
-        }
-
-        /* === 추가된 모바일 햄버거 메뉴 및 사이드바 스타일 === */
-        .hamburger {
             display: none;
+        }
+
+        /* === 햄버거 메뉴 및 사이드바 스타일 (PC/모바일 공통) === */
+        .hamburger {
+            display: flex;
             flex-direction: column;
             gap: 5px;
             cursor: pointer;
@@ -155,27 +142,46 @@
             border-radius: 2px;
         }
 
-        /* 모바일 사이드바 */
+        /* 햄버거 버튼 클릭 시 X 모양으로 변환하는 애니메이션 */
+        .hamburger.open span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        .hamburger.open span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.open span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* 사이드바 박스 - 글래스 모피즘, 오른쪽 각지게, 왼쪽 부드럽게 (Pill 디자인) */
         .mobile-sidebar {
             position: fixed;
             top: 0;
-            right: -280px; /* 기본적으로 화면 밖에 숨김 */
+            right: 0; 
             width: 280px;
             height: 100vh;
-            background: rgba(15, 15, 20, 0.95);
+            background: var(--glass-bg);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border-left: 1px solid var(--glass-border);
+            border: 1px solid var(--glass-border);
+            border-right: none; /* 오른쪽 모서리 경계 제거 */
+            border-radius: 40px 0 0 40px; /* 왼쪽 상하 부드럽게, 오른쪽 상하 각지게 */
             z-index: 1001;
-            transition: right 0.4s cubic-bezier(0.25, 1, 0.5, 1);
             padding-top: 100px;
-            box-shadow: -10px 0 30px rgba(0,0,0,0.5);
+            box-shadow: -10px 0 30px rgba(0,0,0,0.3);
             display: flex;
             flex-direction: column;
+
+            /* 원형 확장 애니메이션 초기 상태 설정 */
+            clip-path: circle(0px at calc(100% - 40px) 40px); /* 가로선 3개(우측 상단) 위치에서 시작 */
+            transition: clip-path 0.7s cubic-bezier(0.25, 1, 0.5, 1);
+            pointer-events: none; /* 닫혀 있을 때 클릭 방지 */
         }
 
+        /* 사이드바가 열릴 때 원형으로 확장되는 애니메이션 */
         .mobile-sidebar.open {
-            right: 0; /* 부드럽게 등장 */
+            clip-path: circle(150% at calc(100% - 40px) 40px);
+            pointer-events: auto;
         }
 
         .mobile-menu {
@@ -184,6 +190,13 @@
             flex-direction: column;
             gap: 25px;
             padding: 0 40px;
+        }
+
+        /* 텍스트 서서히 나타나는 애니메이션 초기 상태 */
+        .mobile-menu li {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 0.4s ease, transform 0.4s ease;
         }
 
         .mobile-menu li a {
@@ -199,6 +212,19 @@
         .mobile-menu li a:active {
             color: var(--highlight);
         }
+
+        /* 사이드바가 열릴 때 텍스트들이 순차적으로 부드럽게 나타남 */
+        .mobile-sidebar.open .mobile-menu li {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .mobile-sidebar.open .mobile-menu li:nth-child(1) { transition-delay: 0.2s; }
+        .mobile-sidebar.open .mobile-menu li:nth-child(2) { transition-delay: 0.25s; }
+        .mobile-sidebar.open .mobile-menu li:nth-child(3) { transition-delay: 0.3s; }
+        .mobile-sidebar.open .mobile-menu li:nth-child(4) { transition-delay: 0.35s; }
+        .mobile-sidebar.open .mobile-menu li:nth-child(5) { transition-delay: 0.4s; }
+        .mobile-sidebar.open .mobile-menu li:nth-child(6) { transition-delay: 0.45s; }
 
         /* 배경 어둡게 처리하는 오버레이 */
         .sidebar-overlay {
@@ -337,27 +363,12 @@
             color: #fff;
         }
 
-        /* 반응형 (모바일 뷰) */
+        /* 반응형 (모바일 뷰) - 기존 메뉴 숨김 코드는 전역으로 옮김 */
         @media (max-width: 768px) {
             h1 { font-size: 3rem; }
             h2 { font-size: 2.2rem; }
             .grid-2 { grid-template-columns: 1fr; }
             .glass-card { padding: 40px 20px; }
-            
-            /* 모바일에서 데스크탑 메뉴 숨기고 햄버거 아이콘 표시 */
-            .desktop-menu { display: none; } 
-            .hamburger { display: flex; }
-
-            /* 햄버거 버튼 클릭 시 X 모양으로 변환하는 애니메이션 */
-            .hamburger.open span:nth-child(1) {
-                transform: translateY(7px) rotate(45deg);
-            }
-            .hamburger.open span:nth-child(2) {
-                opacity: 0;
-            }
-            .hamburger.open span:nth-child(3) {
-                transform: translateY(-7px) rotate(-45deg);
-            }
         }
     </style>
 </head>
@@ -528,7 +539,7 @@
             }
         });
 
-        // 모바일 사이드바 햄버거 메뉴 토글 스크립트
+        // 공통 사이드바 햄버거 메뉴 토글 스크립트
         const hamburger = document.getElementById('hamburger');
         const sidebar = document.getElementById('mobile-sidebar');
         const overlay = document.getElementById('sidebar-overlay');
@@ -544,7 +555,7 @@
         hamburger.addEventListener('click', toggleMobileMenu);
         overlay.addEventListener('click', toggleMobileMenu);
 
-        // 모바일 메뉴 항목 클릭 시 메뉴 닫으면서 이동
+        // 사이드바 메뉴 항목 클릭 시 메뉴 닫으면서 이동
         mobileLinks.forEach(link => {
             link.addEventListener('click', () => {
                 if (sidebar.classList.contains('open')) {
